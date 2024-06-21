@@ -1,0 +1,154 @@
+
+<html>
+<head>
+    <title>Employee DB1MS</title>
+    <style>
+        body {
+            font-family: Candara, Arial, sans-serif;
+            background-color: gray; 
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        button{
+            align-self: center;
+            margin: 0 auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: grey;
+            opacity: 80%;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            
+            text-align: left;
+
+        }
+        form {
+            margin-bottom: 20px;
+            color:white
+        }
+        form label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        form input[type="text"],
+        form input[type="number"] {
+            width: calc(100% - 100px); 
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        
+            /*margin-left: 330px;*/
+        }
+        #employeesList {
+            text-align: left;
+            margin-top: 20px;
+        }
+        #employeesList div {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body style="background-image:url('h1.webp')">
+    <div >
+        <fieldset style="background-color:gray;opacity:80%;color:white;width:600px; margin: 0 auto; margin-top:50px">
+            <legend><b>EDBMS</b></legend>
+        <h1><center>Employee Management System</center></h1>
+        
+        <form id="addEmployeeForm" action="/add_employee" method="POST">
+            NAME: <input type="text" id="name" name="name" style="margin-left:30px"required/><br>
+            
+            POSITION: <input type="text" id="position" name="position" required><br>
+            
+            DOMAIN: <input type="text" id="department" name="department" style="margin-left:12px" required><br>
+            
+            SALARY: <input type="number" id="salary" name="salary" style="margin-left:12px" required><br>
+            
+            <button type="submit" style="margin: 0 auto">Add Employee</button>
+        </form>
+        
+        <h2><center>Employees List</center></h2>
+        <div id="employeesList"></div>
+        <button type="fetch">Fetch Employees</button>
+        </fieldset>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const employeesList = document.getElementById('employeesList');
+
+            function fetchEmployees() {
+                fetch('/fetch_employees') 
+                    .then(response => response.json())
+                    .then(data => {
+                        employeesList.innerHTML = '';
+                        data.forEach(employee => {
+                            const employeeDiv = document.createElement('div');
+                            employeeDiv.classList.add('employee-item');
+                            employeeDiv.innerHTML = `
+                                <strong>ID:</strong> ${employee.id}<br>
+                                <strong>Name:</strong> ${employee.name}<br>
+                                <strong>Position:</strong> ${employee.position}<br>
+                                <strong>Department:</strong> ${employee.department}<br>
+                                <strong>Salary:</strong> ${employee.salary}<br>
+                            `;
+                            employeesList.appendChild(employeeDiv);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching employees:', error);
+                        alert('An error occurred while fetching employees. Please try again.');
+                    });
+            }
+
+            // Initial fetch of employees
+            fetchEmployees();
+
+            document.getElementById('addEmployeeForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch('/add_employee', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(result => {
+                    alert(result);
+                    fetchEmployees(); // Refresh employees list after adding
+                })
+                .catch(error => {
+                    console.error('Error adding employee:', error);
+                    alert('An error occurred while adding the employee. Please try again.');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
