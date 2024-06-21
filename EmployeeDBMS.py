@@ -114,21 +114,6 @@ def add_employee():
             name_entry.delete("0","end")
             salary_entry.delete("0","end")
 
-'''def fetch_employees():
-    conn = connect_to_mysql()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM employees1")
-            employees = cursor.fetchall()
-            employees_frame = tk.Tk()
-            employees_frame.title("Employees") 
-            display_employees(employees,employees_frame)
-        except mysql.connector.Error as err:
-            messagebox.showerror("Error", f"Error fetching employees: {err}")
-        finally:
-            cursor.close()
-            conn.close()'''
 
 def fetch_employees():
     conn = connect_to_mysql()
